@@ -51,13 +51,7 @@ function prodqueue_block_queue() {
         array(l('Edit Requests', 'queue/edits'), prodqueue_queue_edits_count()),
         array(l('Rejected Content', 'queue/rejected'), prodqueue_queue_rejected_count()),
       );
-      
-      // Action Links
-      $action_links = array(
-        l('Generate Pages', 'prodqueue/generate'),
-        l('Settings', 'admin/settings/prodqueue'),
-      );
-      
+
 	  $output = '';
 	  
 	  if(user_access('can view content queue')) {
@@ -77,6 +71,14 @@ function prodqueue_block_queue() {
       
       $output .= '</ul><h3>Actions</h3><ul>';
       
+      // Action Links
+      $action_links = array();
+	  if(user_access('can generate page requests')) {
+      	$action_links[] = l('Generate Pages', 'prodqueue/generate');
+      }
+      $action_links[] = l('Settings', 'admin/settings/prodqueue');
+
+            
       foreach($action_links as $link) {
           $output .= '<li>' . $link . '</li>';
       }
