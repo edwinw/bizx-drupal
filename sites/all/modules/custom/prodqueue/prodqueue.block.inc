@@ -58,8 +58,15 @@ function prodqueue_block_queue() {
         l('Settings', 'admin/settings/prodqueue'),
       );
       
-	  $output = '<h3>'.t('Content Queue').'</h3>';
-	  $output .= prodqueue_block_editor();
+	  $output = '';
+	  
+	  if(user_access('can view content queue')) {
+		 
+		  $output .= prodqueue_block_content_editor();
+	  }
+	  if(user_access('can view photo queue')) {
+	  	 $output .= prodqueue_block_photo_editor();
+	  }
 	  
       $output .= '<h3>All Queues</h3><ul>';
 	  
@@ -91,21 +98,43 @@ function prodqueue_block_queue() {
       return $output;
 }
 
-function prodqueue_block_editor() {
-    drupal_add_css(drupal_get_path('module', 'prodqueue') . '/css/prodqueue_block.css');
+function prodqueue_block_content_editor() {
+	drupal_add_css(drupal_get_path('module', 'prodqueue') . '/css/prodqueue_block.css');
     // Again, I am lazy, so links are looped. - Ryan
     $editor_links = array(
-        array(l('Your Pages', 'queue/user'), prodqueue_queue_user_count()),
+        array(l('My Pages', 'queue/user'), prodqueue_queue_user_count()),
         array(l('Check Out Pages', 'queue/new'), prodqueue_queue_new_count()),
     );
     
-    $output = '<ul>';
-    
+     $output = '<h3>'.t('Content Queue').'</h3>';
+    $output .= '<ul>';
+	
     foreach($editor_links as $link) {
         $output .= '<li>' . $link[0] . ' <span class="prodqueue_block_marker">' . $link[1] . '</span></li>';
     }
-
+	
     $output .= '</ul>';
+
+    return $output;
+}
+
+
+function prodqueue_block_photo_editor() {
     
+    // Again, I am lazy, so links are looped. - Ryan
+    $editor_links = array(
+        array(l('My Pages', 'queue/user'), prodqueue_queue_user_count()),
+        array(l('Check Out Pages for Photo', 'queue/new'), prodqueue_queue_new_count()),
+    );
+    
+    $output = '<h3>'.t('Photo Queue').'</h3>';
+    $output .= '<ul>';
+	
+    foreach($editor_links as $link) {
+        $output .= '<li>' . $link[0] . ' <span class="prodqueue_block_marker">' . $link[1] . '</span></li>';
+    }
+	
+    $output .= '</ul>';
+
     return $output;
 }

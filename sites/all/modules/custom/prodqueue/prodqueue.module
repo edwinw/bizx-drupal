@@ -55,6 +55,14 @@ function prodqueue_menu() {
     
     );
   	
+	// yes a new menu for checkout
+	$items['prodqueue/checkout/%'] = array(
+		'type' => MENU_CALLBACK,
+		'title' => 'Checkout Page',
+		'access arguments' => array(2),
+		'page callback' => 'prodqueue_queue_new',
+		'access callback' => TRUE,
+	);
 	return $items;
 }
 
@@ -350,7 +358,7 @@ function prodqueue_node_submit($form_id, &$form_state) {
 function prodqueue_queue_page($queue) {
     switch($queue) {
         case 'new':
-            return prodqueue_queue_new();
+            return prodqueue_queue_new('content');
             break;
         case 'user':
             return prodqueue_queue_user();
@@ -386,7 +394,9 @@ function prodqueue_perm() {
     'can view photo queue',
     'can checkout for photo edit',
     'can generate page requests',
-    'can publish pages'
+    'can publish pages',
+    'can publish anyway',
+    'can reject pages'
     );
 }
 
@@ -438,7 +448,7 @@ function prodqueue_queue_new_count() {
     return $count['count'];
 }
 
-function prodqueue_queue_new() {
+function prodqueue_queue_new($checkout_type) {
     drupal_set_title('Production Queue: New Content');
     $data = prodqueue_queue_new_data();
     
@@ -450,7 +460,7 @@ function prodqueue_queue_new() {
                 l($item['title'], 'node/' . $nid),
                 $item['type'],
                 $item['created'],
-                l('Checkout', 'prodqueue/action/content_checkout/'. $nid),
+                l('Checkout', 'prodqueue/action/'.$checkout_type.'_checkout/'. $nid),
             );
         }
     
@@ -459,7 +469,7 @@ function prodqueue_queue_new() {
         return theme('table', $header, $rows);
     }
     else {
-        return t('<p>There is no new content to be edited at this time.</p>');
+        return '<p>'.t('There is no new content to be edited at this time.').'</p>';
     }
 }
 
